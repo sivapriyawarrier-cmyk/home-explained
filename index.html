@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>Home Explained</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     SCREEN: DASHBOARD
+════════════════════════════════════════ -->
+<div class="screen" id="screen-dashboard">
+  <div class="topbar">
+    <div class="topbar-row">
+      <div>
+        <div class="brand">Home <span>Explained</span></div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">Sandyford, Dublin</div>
+      </div>
+      <div class="who-toggle">
+        <button class="who-btn active" data-who="Priya" onclick="setUser('Priya')">Priya</button>
+        <button class="who-btn" data-who="Vivek" onclick="setUser('Vivek')">Vivek</button>
+      </div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="stat-grid">
+      <div class="stat-card accent">
+        <div class="stat-num" id="dash-total">0</div>
+        <div class="stat-label">Total items</div>
+      </div>
+      <div class="stat-card warn">
+        <div class="stat-num" id="dash-expiring">0</div>
+        <div class="stat-label">Expiring soon</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" id="dash-value">€0</div>
+        <div class="stat-label">Total value</div>
+      </div>
+      <div class="stat-card">
+        <div style="display:flex;justify-content:space-between;">
+          <div><div class="stat-num" id="dash-priya">0</div><div class="stat-label">Priya</div></div>
+          <div style="text-align:right;"><div class="stat-num" id="dash-vivek">0</div><div class="stat-label">Vivek</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Quick actions</div>
+    <div class="qa-list">
+      <button class="qa-btn" onclick="goTo('inventory')">
+        <div class="qa-icon">📦</div>
+        <div><div class="qa-text">Browse inventory</div><div class="qa-sub" id="qa-inv-sub">All items in your home</div></div>
+        <span class="qa-arrow">›</span>
+      </button>
+      <button class="qa-btn" onclick="goTo('add')">
+        <div class="qa-icon">＋</div>
+        <div><div class="qa-text">Add new item</div><div class="qa-sub">Log something you own</div></div>
+        <span class="qa-arrow">›</span>
+      </button>
+      <button class="qa-btn" onclick="goTo('expiry')">
+        <div class="qa-icon">⏰</div>
+        <div><div class="qa-text">Expiring soon</div><div class="qa-sub" id="qa-exp-sub">Check items by expiry</div></div>
+        <span class="qa-arrow">›</span>
+      </button>
+      <button class="qa-btn" onclick="goTo('myhome')">
+        <div class="qa-icon">🏡</div>
+        <div><div class="qa-text">My home structure</div><div class="qa-sub">Rooms and locations</div></div>
+        <span class="qa-arrow">›</span>
+      </button>
+      <button class="qa-btn" onclick="goTo('export')">
+        <div class="qa-icon">📤</div>
+        <div><div class="qa-text">Export inventory</div><div class="qa-sub">Download as CSV</div></div>
+        <span class="qa-arrow">›</span>
+      </button>
+    </div>
+  </div>
+  <div class="bottomnav">
+    <button class="nav-item active" data-nav="dashboard" onclick="goTo('dashboard')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-item" data-nav="inventory" onclick="goTo('inventory')"><span class="nav-icon">📦</span><span class="nav-label">Inventory</span></button>
+    <div class="nav-add-wrap"><button class="nav-add" onclick="goTo('add')">＋</button></div>
+    <button class="nav-item" data-nav="myhome" onclick="goTo('myhome')"><span class="nav-icon">🏡</span><span class="nav-label">My Home</span></button>
+    <button class="nav-item" data-nav="expiry" onclick="goTo('expiry')"><span class="nav-icon">⏰</span><span class="nav-label">Expiry</span></button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN: INVENTORY
+════════════════════════════════════════ -->
+<div class="screen" id="screen-inventory">
+  <div class="topbar">
+    <div class="topbar-row" style="margin-bottom:10px;">
+      <div class="screen-title">Inventory</div>
+      <div class="who-toggle">
+        <button class="who-btn active" data-who="Priya" onclick="setUser('Priya')">Priya</button>
+        <button class="who-btn" data-who="Vivek" onclick="setUser('Vivek')">Vivek</button>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input class="search-input" id="search-input" type="text" placeholder="Search anything in your home..." />
+    </div>
+    <div class="filter-row" id="filter-rooms"></div>
+    <div class="filter-row" id="filter-furniture"></div>
+    <div class="filter-row" id="filter-categories"></div>
+    <div class="filter-row">
+      <button class="chip person-chip active" data-person="all" onclick="setPersonFilter('all')">Everyone</button>
+      <button class="chip person-chip" data-person="Priya" onclick="setPersonFilter('Priya')">Priya's items</button>
+      <button class="chip person-chip" data-person="Vivek" onclick="setPersonFilter('Vivek')">Vivek's items</button>
+    </div>
+  </div>
+  <div class="content">
+    <div class="results-info" id="results-count">Loading...</div>
+    <div id="items-list"></div>
+  </div>
+  <div class="bottomnav">
+    <button class="nav-item" data-nav="dashboard" onclick="goTo('dashboard')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-item active" data-nav="inventory" onclick="goTo('inventory')"><span class="nav-icon">📦</span><span class="nav-label">Inventory</span></button>
+    <div class="nav-add-wrap"><button class="nav-add" onclick="goTo('add')">＋</button></div>
+    <button class="nav-item" data-nav="myhome" onclick="goTo('myhome')"><span class="nav-icon">🏡</span><span class="nav-label">My Home</span></button>
+    <button class="nav-item" data-nav="expiry" onclick="goTo('expiry')"><span class="nav-icon">⏰</span><span class="nav-label">Expiry</span></button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN: ADD / EDIT ITEM
+════════════════════════════════════════ -->
+<div class="screen" id="screen-add">
+  <div class="topbar">
+    <div class="topbar-row">
+      <button class="back-btn" onclick="goTo('inventory')">← Back</button>
+      <div class="screen-title" id="form-title">Add item</div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="form-field">
+      <label class="form-label">Item name <span class="req">*</span></label>
+      <input class="form-input" id="form-name" type="text" placeholder="e.g. Paracetamol 500mg" />
+    </div>
+
+    <div class="form-section-title">Where is it?</div>
+    <div class="form-row">
+      <div class="form-field">
+        <label class="form-label">Room <span class="req">*</span></label>
+        <select class="form-input" id="form-room" onchange="onRoomChange(this.value)"></select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Location <span class="req">*</span></label>
+        <select class="form-input" id="form-furniture"></select>
+      </div>
+    </div>
+
+    <div class="form-section-title">What is it?</div>
+    <div class="form-row">
+      <div class="form-field">
+        <label class="form-label">Category <span class="req">*</span></label>
+        <select class="form-input" id="form-category" onchange="onCategoryChange(this.value)"></select>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Subcategory <span class="req">*</span></label>
+        <select class="form-input" id="form-subcategory"></select>
+      </div>
+    </div>
+
+    <div class="form-section-title">Details</div>
+    <div class="form-row">
+      <div class="form-field">
+        <label class="form-label">Quantity</label>
+        <input class="form-input" id="form-quantity" type="number" min="1" value="1" />
+      </div>
+      <div class="form-field">
+        <label class="form-label">Price paid <span class="opt">(optional)</span></label>
+        <input class="form-input" id="form-price" type="text" placeholder="€0.00" />
+      </div>
+    </div>
+
+    <div class="form-field hidden" id="expiry-field">
+      <label class="form-label">Expiry date <span class="opt">(optional)</span></label>
+      <input class="form-input" id="form-expiry" type="date" />
+    </div>
+
+    <div class="form-field">
+      <label class="form-label">Date purchased <span class="opt">(optional)</span></label>
+      <input class="form-input" id="form-purchased" type="date" />
+    </div>
+
+    <div class="form-field">
+      <label class="form-label">Added by</label>
+      <div class="who-select">
+        <button class="who-opt active" data-who="Priya" onclick="document.querySelectorAll('.who-opt').forEach(b=>b.classList.toggle('active',b.dataset.who==='Priya'))">Priya</button>
+        <button class="who-opt" data-who="Vivek" onclick="document.querySelectorAll('.who-opt').forEach(b=>b.classList.toggle('active',b.dataset.who==='Vivek'))">Vivek</button>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label class="form-label">Notes <span class="opt">(optional)</span></label>
+      <input class="form-input" id="form-notes" type="text" placeholder="e.g. Boots pharmacy, bottom shelf" />
+    </div>
+
+    <button class="btn-save" id="btn-save" onclick="saveItem()">Save item</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN: ITEM DETAIL
+════════════════════════════════════════ -->
+<div class="screen" id="screen-detail">
+  <div class="topbar">
+    <button class="back-btn" onclick="goTo('inventory')">← Back to inventory</button>
+  </div>
+  <div class="content">
+    <div class="detail-name" id="detail-name"></div>
+    <div class="detail-location" id="detail-location"></div>
+    <div style="margin-bottom:16px;">
+      <span id="detail-expiry" class="exp-badge" style="display:none;"></span>
+    </div>
+    <div class="detail-grid">
+      <div class="detail-field"><div class="detail-field-label">Category</div><div class="detail-field-val" id="detail-category"></div></div>
+      <div class="detail-field"><div class="detail-field-label">Subcategory</div><div class="detail-field-val" id="detail-subcategory"></div></div>
+      <div class="detail-field"><div class="detail-field-label">Quantity</div><div class="detail-field-val" id="detail-quantity"></div></div>
+      <div class="detail-field"><div class="detail-field-label">Price paid</div><div class="detail-field-val" id="detail-price"></div></div>
+      <div class="detail-field"><div class="detail-field-label">Added by</div><div class="detail-field-val" id="detail-addedby"></div></div>
+      <div class="detail-field"><div class="detail-field-label">Date added</div><div class="detail-field-val" id="detail-dateadded"></div></div>
+      <div class="detail-field"><div class="detail-field-label">Date purchased</div><div class="detail-field-val" id="detail-purchased"></div></div>
+    </div>
+    <div class="detail-notes hidden" id="detail-notes-section">
+      <div class="detail-notes-label">Notes</div>
+      <div class="detail-notes-val" id="detail-notes-val"></div>
+    </div>
+    <div class="detail-actions">
+      <button class="btn-edit" id="btn-edit-item">Edit item</button>
+      <button class="btn-delete" onclick="openModal('modal-delete')">Delete</button>
+    </div>
+  </div>
+  <div class="bottomnav">
+    <button class="nav-item" data-nav="dashboard" onclick="goTo('dashboard')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-item" data-nav="inventory" onclick="goTo('inventory')"><span class="nav-icon">📦</span><span class="nav-label">Inventory</span></button>
+    <div class="nav-add-wrap"><button class="nav-add" onclick="goTo('add')">＋</button></div>
+    <button class="nav-item" data-nav="myhome" onclick="goTo('myhome')"><span class="nav-icon">🏡</span><span class="nav-label">My Home</span></button>
+    <button class="nav-item" data-nav="expiry" onclick="goTo('expiry')"><span class="nav-icon">⏰</span><span class="nav-label">Expiry</span></button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN: EXPIRY
+════════════════════════════════════════ -->
+<div class="screen" id="screen-expiry">
+  <div class="topbar">
+    <div class="screen-title">Expiring soon</div>
+  </div>
+  <div class="content" id="expiry-content">
+    <div class="loading"><div class="spinner"></div> Loading...</div>
+  </div>
+  <div class="bottomnav">
+    <button class="nav-item" data-nav="dashboard" onclick="goTo('dashboard')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-item" data-nav="inventory" onclick="goTo('inventory')"><span class="nav-icon">📦</span><span class="nav-label">Inventory</span></button>
+    <div class="nav-add-wrap"><button class="nav-add" onclick="goTo('add')">＋</button></div>
+    <button class="nav-item" data-nav="myhome" onclick="goTo('myhome')"><span class="nav-icon">🏡</span><span class="nav-label">My Home</span></button>
+    <button class="nav-item active" data-nav="expiry" onclick="goTo('expiry')"><span class="nav-icon">⏰</span><span class="nav-label">Expiry</span></button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN: MY HOME
+════════════════════════════════════════ -->
+<div class="screen" id="screen-myhome">
+  <div class="topbar">
+    <div class="screen-title">My home</div>
+  </div>
+  <div class="content">
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;line-height:1.5;">Your home structure — rooms and locations. Tap a room to expand or collapse. Use rename to update any location name.</div>
+    <div id="home-tree"></div>
+  </div>
+  <div class="bottomnav">
+    <button class="nav-item" data-nav="dashboard" onclick="goTo('dashboard')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-item" data-nav="inventory" onclick="goTo('inventory')"><span class="nav-icon">📦</span><span class="nav-label">Inventory</span></button>
+    <div class="nav-add-wrap"><button class="nav-add" onclick="goTo('add')">＋</button></div>
+    <button class="nav-item active" data-nav="myhome" onclick="goTo('myhome')"><span class="nav-icon">🏡</span><span class="nav-label">My Home</span></button>
+    <button class="nav-item" data-nav="expiry" onclick="goTo('expiry')"><span class="nav-icon">⏰</span><span class="nav-label">Expiry</span></button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SCREEN: EXPORT
+════════════════════════════════════════ -->
+<div class="screen" id="screen-export">
+  <div class="topbar">
+    <div class="topbar-row">
+      <button class="back-btn" onclick="goTo('dashboard')">← Back</button>
+      <div class="screen-title">Export</div>
+    </div>
+  </div>
+  <div class="content">
+    <div class="export-card">
+      <div class="export-title">Full inventory CSV</div>
+      <div class="export-desc">Download everything you own as a spreadsheet. Includes all item details — name, location, category, quantity, price, who added it, and dates. Useful for insurance records or moving house.</div>
+      <div style="font-size:13px;color:var(--text-muted);margin-bottom:14px;"><span id="export-count">0</span> items will be exported.</div>
+      <button class="btn-export" onclick="exportCSV()">Download CSV</button>
+    </div>
+  </div>
+  <div class="bottomnav">
+    <button class="nav-item active" data-nav="dashboard" onclick="goTo('dashboard')"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></button>
+    <button class="nav-item" data-nav="inventory" onclick="goTo('inventory')"><span class="nav-icon">📦</span><span class="nav-label">Inventory</span></button>
+    <div class="nav-add-wrap"><button class="nav-add" onclick="goTo('add')">＋</button></div>
+    <button class="nav-item" data-nav="myhome" onclick="goTo('myhome')"><span class="nav-icon">🏡</span><span class="nav-label">My Home</span></button>
+    <button class="nav-item" data-nav="expiry" onclick="goTo('expiry')"><span class="nav-icon">⏰</span><span class="nav-label">Expiry</span></button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     MODAL: DELETE CONFIRM
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-delete">
+  <div class="modal">
+    <div class="modal-title">Delete this item?</div>
+    <div class="modal-text">This will permanently remove the item from your home inventory. This cannot be undone.</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal('modal-delete')">Cancel</button>
+      <button class="modal-confirm" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
